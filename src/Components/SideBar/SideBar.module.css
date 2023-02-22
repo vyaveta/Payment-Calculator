@@ -1,0 +1,35 @@
+.container{
+    height: 100vh;
+    min-width: 20vw;
+    background-color: white;
+    color: var(--primaryColor);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem;
+}
+.input{
+    outline: none;
+    border: 2px solid var(--primaryColor);
+    padding: 0.5rem 1rem;
+    border-radius: .5rem;
+    font-weight: 600;
+    background-color: var(--gray);
+    color: var(--primaryColor);
+}
+.innerBox{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+.submitButton{
+    border-radius: .5rem;
+    outline: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+}
+.submitButton:hover{
+    background-color: var(--primaryColor);
+}
