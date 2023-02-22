@@ -3,10 +3,11 @@
 ## This is a Next.js app build using typescript
 
 ### what will this app do ?
-    * well this app helps you to calculate the monthly payments and helps you pay off your debts more efficiently
+    * well this app helps you to calculate the monthly payments and helps you pay off your debts more 
+    efficiently
 
 ### how to use this app
-    * you can open and use this app using the link in the description
+    * you can open and use this app using the link in the description or go to https://payment-calculator-ten.vercel.app/
 
 ### how to run this app
     * step 1 type "git clone https://github.com/vyaveta/Payment-Calculator.git " in your terminal window/cmd
