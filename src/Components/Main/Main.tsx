@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import css from './Main.module.css'
 import { useSelector, useDispatch } from 'react-redux'
 import { incrementByAmount } from '@/slices/userBalance'
 import type { RootState } from 'store'
-
-import * as chartjs from 'chart.js';
+import {toast} from 'react-toastify'
 
 // some imports for graph
+import * as chartjs from 'chart.js';
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -18,6 +18,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { MainProp } from '@/types/Props'
 
 ChartJS.register(
   CategoryScale,
@@ -29,11 +30,41 @@ ChartJS.register(
   Legend,
 );
 
-const Main = () => {
+const Main = ({text}: MainProp) => {
 
   const balance = useSelector((state: RootState) => state.counter.value)
   
   const [monthlyPaymentAmount,setMonthlyPaymentAmount] = useState<number>()
+  const [showTimePeriod,setShowTimePeriod] = useState<boolean>(false)
+  const [timePeriod,setTimePeriod] = useState<number>()
+  const [errorMsg,setErrorMsg] = useState<boolean | string>(false)
+
+
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const handleButtonClick = () => {
+    if(!inputRef || !inputRef.current || !inputRef.current.value || balance === 0){
+      setErrorMsg('Enter the Monthly payment amount!')
+      setShowTimePeriod(false)
+      return
+    }
+    if(parseInt(inputRef.current.value) <= 0){
+      setErrorMsg('Increase your monthly payment')
+      return
+    }
+    setMonthlyPaymentAmount(parseInt(inputRef.current.value))
+    setShowTimePeriod(true)
+  }
+
+  // Some useEffects
+  // useEffect(() => {
+  //   if(balance === 0) setShowTimePeriod(false)
+  //   else if(balance != 0 && monthlyPaymentAmount && monthlyPaymentAmount >= 0) setShowTimePeriod(true)
+  // },[balance])
+
+  useEffect(() => {
+   if(errorMsg) toast.error(errorMsg)
+  },[errorMsg])
 
   // graph options
   const options: chartjs.ChartOptions = {
@@ -44,15 +75,9 @@ const Main = () => {
       },
       title: {
         display: true,
-        text: "Loan Period Graph",
+        text: "Calci Pay",
       },
     },
-    // scales: {
-    //   y: {
-    //     min: 3,
-    //     max:6,
-    //   }
-    // }
   };
 
   let initialBalance: number = balance;
@@ -65,12 +90,13 @@ const Main = () => {
   let xLabel = [];
   let value = initialBalance;
 
-  for (let i = 0; i <= xaxis; i++) {
+  for (let i:number = 0; i <= xaxis; i++) {
     xLabel.push(i);
     if (value < 0) {
       value = 0;
     }
     yLabel.push(value);
+    // setyLabel([...yLabel,value])
     value = value - emi;
   }
 
@@ -97,20 +123,31 @@ const Main = () => {
         <div className={`${css.box}`}>
           <h2>Initial Balance: {balance}</h2>
         </div>
+       {
+        showTimePeriod &&  <div className={`${css.box}`}>You will need {yLabel.length-1} months to complete this payment</div>
+       }
         <div className={`${css.box}`}>
-          <input type="number" placeholder='Monthly Payment'
+          <input type="number"
+          placeholder='Monthly Payment'
+          ref={inputRef}
           autoComplete='off'
           className={`${css.input}`}
-          value={monthlyPaymentAmount}
-          onChange={(e) => setMonthlyPaymentAmount(parseInt(e.target.value))}
           />
-          <button className={`${css.button}`}>
+          <button className={`${css.button}`} onClick={handleButtonClick}>
             Set
           </button>
         </div>
-        <div className={`${css.graph}`}>
-          <Line options={options}  data={data}> </Line>
-        </div>
+        {
+          showTimePeriod? (
+            <div className={`${css.graph}`}>
+               <Line options={options}  data={data}> </Line>
+            </div>
+          ) : (
+            <div className={`${css.fullBox}`}>
+              <h3>{text}</h3>
+            </div>
+          )
+        }
     </div>
   )
 }

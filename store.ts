@@ -1,9 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import counterReducer from './src/slices/userBalance'
+import backgroundReducer from './src/slices/backgroundSlice'
+import fontColorReducer from './src/slices/fontColorSlice'
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
+    bgcolor: backgroundReducer,
+    fontColor: fontColorReducer,
   },
 })
 
